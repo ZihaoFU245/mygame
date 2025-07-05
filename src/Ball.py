@@ -32,7 +32,11 @@ class Ball(GameObject):
         self.velocity.y = self.speed * math.sin(angle_rad)
     
     def update(self, dt: float, **kwargs):
-        """Update ball position and handle wall collisions"""
+        """Update ball position and handle wall collisions
+        
+        Returns:
+            bool: True if ball hit a wall, False otherwise
+        """
         # Move the ball
         self.move(dt)
         
@@ -40,14 +44,20 @@ class Ball(GameObject):
         screen_height = kwargs.get('screen_height', 720)
         wall_thickness = kwargs.get('wall_thickness', 20)
         
+        # Check for wall collisions
+        wall_hit = False
+        
         # Bounce off top and bottom walls
         if self.position.y <= wall_thickness or self.position.y + self.height >= screen_height - wall_thickness:
             self.velocity.y *= -1
+            wall_hit = True
             # Keep ball within bounds
             if self.position.y <= wall_thickness:
                 self.position.y = wall_thickness
             else:
                 self.position.y = screen_height - wall_thickness - self.height
+        
+        return wall_hit
     
     def draw(self, screen: pygame.Surface):
         """Draw the ball as a circle"""
