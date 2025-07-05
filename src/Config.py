@@ -78,3 +78,19 @@ class Config:
         boost_factor = cls.get_speed_boost_factor(difficulty)
         percentage = int((boost_factor - 1.0) * 100)
         return f"{difficulty} (+{percentage}% speed/hit)"
+    
+    @classmethod
+    def get_bot_difficulty_display_text(cls, difficulty: str) -> str:
+        """Get display text for bot difficulty including both speed and accuracy"""
+        boost_factor = cls.get_speed_boost_factor(difficulty)
+        speed_percentage = int((boost_factor - 1.0) * 100)
+        
+        # Bot accuracy percentages based on difficulty
+        accuracy_map = {
+            "Easy": 60,
+            "Medium": 80, 
+            "Hard": 95
+        }
+        accuracy = accuracy_map.get(difficulty, 80)
+        
+        return f"{difficulty} (+{speed_percentage}% speed/hit, {accuracy}% bot accuracy)"
