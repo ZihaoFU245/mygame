@@ -1,14 +1,15 @@
 import pygame
 from pygame import Vector2
 from .Paddle import Paddle
+from .Config import Config
 
 class Player(Paddle):
     """Player class with automatic positioning and setup"""
 
     def __init__(self, side: str, screen_width: int, screen_height: int, 
-                 paddle_width: int = 20, paddle_height: int = 100, 
-                 paddle_margin: int = 20, speed: int = 400, 
-                 color = "black", wall_thickness: int = 20):
+                 paddle_width: int = None, paddle_height: int = None, 
+                 paddle_margin: int = 20, speed: int = None, 
+                 color = None, wall_thickness: int = None):
         """Initialize player with automatic positioning
         
         Args:
@@ -22,6 +23,13 @@ class Player(Paddle):
             color: Paddle color
             wall_thickness: Thickness of top/bottom walls
         """
+        # Use config values as defaults
+        paddle_width = paddle_width or Config.PADDLE_WIDTH
+        paddle_height = paddle_height or Config.PADDLE_HEIGHT
+        speed = speed or Config.PADDLE_MAX_SPEED
+        color = color or Config.PADDLE_COLOR
+        wall_thickness = wall_thickness or Config.WALL_THICKNESS
+        
         # Calculate position based on side
         if side == "left":
             x = paddle_margin
@@ -35,9 +43,8 @@ class Player(Paddle):
         # Center vertically
         y = (screen_height - paddle_height) // 2
         
-        # Initialize paddle with physics properties
-        mass = 5.0  # Heavier paddles for more realistic physics
-        super().__init__(x, y, paddle_width, paddle_height, speed, mass, color)
+        # Initialize paddle with physics properties using new signature
+        super().__init__(x, y, paddle_width, paddle_height, speed, Config.PADDLE_MASS, color)
         self.order = order
         
         # Set screen bounds automatically

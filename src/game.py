@@ -3,6 +3,7 @@ from .Wall import Wall
 from .Player import Player
 from .Ball import Ball
 from .GameUI import GameUI
+from .Config import Config
 from enum import Enum
 
 class GameState(Enum):
@@ -13,8 +14,12 @@ class GameState(Enum):
 class Game:
     """Main game class focused on game logic only"""
 
-    def __init__(self, width: int = 1280, height: int = 720, fps: int = 120):
+    def __init__(self, width: int = None, height: int = None, fps: int = 120):
         """Game initialization"""
+        # Use config values as defaults
+        width = width or Config.SCREEN_WIDTH
+        height = height or Config.SCREEN_HEIGHT
+        
         pygame.init()
         self.screen = pygame.display.set_mode((width, height))
         self.width = width
@@ -27,17 +32,17 @@ class Game:
         # Game state management
         self.state = GameState.START_SCREEN
         
-        # Game configuration
+        # Game configuration from Config
         self.dark_grey = (64, 64, 64)
         self.white = (255, 255, 255)
         self.scores = [0, 0]  # [left_player_score, right_player_score]
-        self.winning_score = 7
+        self.winning_score = Config.WINNING_SCORE
         self.winner = None
         
-        # Difficulty system
-        self.difficulty_levels = [1.25, 1.5, 2.0]  # 25%, 50%, 100% speed boost
+        # Difficulty system with updated speed boosts
+        self.difficulty_levels = [Config.SPEED_BOOST_EASY, Config.SPEED_BOOST_MEDIUM, Config.SPEED_BOOST_HARD]
         self.difficulty_names = ["Easy", "Medium", "Hard"]
-        self.selected_difficulty = 1  # Default to Medium (50%)
+        self.selected_difficulty = 1  # Default to Medium
         self.speed_increase_factor = self.difficulty_levels[self.selected_difficulty]
         
         # Initialize UI and game objects
@@ -46,13 +51,13 @@ class Game:
 
     def _initialize_game_objects(self):
         """Initialize all game objects"""
-        self.topWall = Wall(0, 0, self.width, 20, color=self.dark_grey)
-        self.bottomWall = Wall(0, self.height - 20, self.width, 20, color=self.dark_grey)
+        self.topWall = Wall(0, 0, self.width, Config.WALL_THICKNESS, color=Config.WALL_COLOR)
+        self.bottomWall = Wall(0, self.height - Config.WALL_THICKNESS, self.width, Config.WALL_THICKNESS, color=Config.WALL_COLOR)
         
-        self.playerLeft = Player("left", self.width, self.height, color=self.dark_grey)
-        self.playerRight = Player("right", self.width, self.height, color=self.dark_grey)
+        self.playerLeft = Player("left", self.width, self.height, color=Config.PADDLE_COLOR)
+        self.playerRight = Player("right", self.width, self.height, color=Config.PADDLE_COLOR)
         
-        self.ball = Ball(self.width // 2, self.height // 2, color="red")
+        self.ball = Ball(self.width // 2, self.height // 2)
         
 
     def handle_events(self) -> None:
@@ -124,7 +129,7 @@ class Game:
         self.playerRight.keyListen(keys, dt)
         
         # Update ball and check for wall collisions
-        wall_hit = self.ball.update(dt, screen_height=self.height, wall_thickness=20)
+        wall_hit = self.ball.update(dt, screen_height=self.height, wall_thickness=Config.WALL_THICKNESS)
         if wall_hit:
             self.ball.increase_speed(self.speed_increase_factor)
         
@@ -172,7 +177,7 @@ class Game:
 
     def _draw_game(self):
         """Draw the main game screen"""
-        self.screen.fill(self.white)
+        self.screen.fill(Config.BACKGROUND_COLOR)
         
         # Draw UI elements
         self.ui.draw_net(self.screen)
@@ -193,8 +198,3 @@ class Game:
             self.update(dt)
             self.draw()
         pygame.quit()
-
-
-
-
-        

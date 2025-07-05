@@ -2,19 +2,27 @@ import pygame
 import math
 from typing import Any, Tuple
 from .GameObjectBase import GameObject
+from .Config import Config
 
 class Paddle(GameObject):
     """Paddle object for Pong game with physics"""
 
-    def __init__(self, x: float, y: float, width: float, height: float, 
-                 speed: float = 400.0, mass: float = 5.0, color: Any = "black"):
+    def __init__(self, x: float, y: float, width: float = None, height: float = None, 
+                 speed: float = None, mass: float = None, color: Any = None):
+        # Use config values as defaults
+        width = width or Config.PADDLE_WIDTH
+        height = height or Config.PADDLE_HEIGHT
+        speed = speed or Config.PADDLE_MAX_SPEED
+        mass = mass or Config.PADDLE_MASS
+        color = color or Config.PADDLE_COLOR
+        
         super().__init__(x, y, width, height, mass)
         self.color = color
         self.max_speed = speed  # Maximum speed
-        self.acceleration = 800.0  # Pixels per second squared
-        self.deceleration = 600.0  # Deceleration when no input
+        self.acceleration = Config.PADDLE_ACCELERATION  # Pixels per second squared
+        self.deceleration = Config.PADDLE_DECELERATION  # Deceleration when no input
         self.screen_bounds: Tuple[int, int] = (0, 0)
-        self.friction_coefficient = 0.3  # Friction that affects ball spin
+        self.friction_coefficient = Config.PADDLE_FRICTION_COEFFICIENT  # Friction that affects ball spin
         self.is_moving = False
 
     def set_screen_bounds(self, width: int, height: int, wall_thickness: int = 20):

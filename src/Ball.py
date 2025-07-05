@@ -2,25 +2,32 @@ import pygame
 import random
 import math
 from .GameObjectBase import GameObject
+from .Config import Config
 
 class Ball(GameObject):
     """Pong Ball Object with advanced physics"""
     
-    def __init__(self, x: float, y: float, size: float = 15, 
-                 speed: float = 300, mass: float = 1.0, color: str = "black"):
+    def __init__(self, x: float, y: float, size: float = None, 
+                 speed: float = None, mass: float = None, color: str = None):
+        # Use config values as defaults
+        size = size or Config.BALL_SIZE
+        speed = speed or Config.BALL_BASE_SPEED
+        mass = mass or Config.BALL_MASS
+        color = color or Config.BALL_COLOR
+        
         # Ball is square for collision, but we'll draw it as a circle
         super().__init__(x, y, size, size, mass)
-        self.radius = size // 2
+        self.radius = size // 2  # Now both are ints, so this works correctly
         self.base_speed = speed  # Store original speed for resets
         self.speed = speed
         self.color = color
         self.initial_position = pygame.Vector2(x, y)
-        self.max_bounce_angle = 75  # Maximum angle in degrees for paddle bounces
+        self.max_bounce_angle = Config.BALL_MAX_BOUNCE_ANGLE
         
-        # Advanced physics properties
-        self.air_friction = 0.98  # Air resistance factor (0.98 = 2% friction per second)
-        self.angular_friction = 0.95  # Angular velocity decay
-        self.magnus_effect_strength = 50.0  # How much spin affects trajectory
+        # Advanced physics properties from config
+        self.air_friction = Config.AIR_FRICTION
+        self.angular_friction = Config.ANGULAR_FRICTION
+        self.magnus_effect_strength = Config.MAGNUS_EFFECT_STRENGTH
         self.rotation_angle = 0.0  # Visual rotation for drawing
         
         # Initialize with random direction
@@ -72,7 +79,7 @@ class Ball(GameObject):
         if self.position.y <= wall_thickness or self.position.y + self.height >= screen_height - wall_thickness:
             self.velocity.y *= -1
             # Reverse some of the spin when hitting walls
-            self.angular_velocity *= -0.7
+            self.angular_velocity *= -Config.WALL_SPIN_REDUCTION
             wall_hit = True
             # Keep ball within bounds
             if self.position.y <= wall_thickness:
@@ -84,7 +91,7 @@ class Ball(GameObject):
     
     def _apply_magnus_effect(self, dt: float):
         """Apply Magnus effect - spin creates a perpendicular force"""
-        if abs(self.angular_velocity) > 0.1:  # Only apply if there's significant spin
+        if abs(self.angular_velocity) > Config.MAGNUS_MIN_SPIN_THRESHOLD:  # Only apply if there's significant spin
             # Magnus force is perpendicular to velocity direction
             if self.velocity.length() > 0:
                 # Get perpendicular direction (90 degrees to velocity)
@@ -127,11 +134,11 @@ class Ball(GameObject):
         pygame.draw.circle(screen, self.color, (center_x, center_y), self.radius)
         
         # Draw a small indicator to show rotation
-        if abs(self.angular_velocity) > 0.5:  # Only show if spinning significantly
+        if abs(self.angular_velocity) > Config.SPIN_INDICATOR_MIN_THRESHOLD:  # Only show if spinning significantly
             indicator_length = self.radius * 0.6
             end_x = center_x + indicator_length * math.cos(self.rotation_angle)
             end_y = center_y + indicator_length * math.sin(self.rotation_angle)
-            pygame.draw.line(screen, "white", (center_x, center_y), 
+            pygame.draw.line(screen, (255, 255, 255), (center_x, center_y), 
                            (int(end_x), int(end_y)), 2)
     
     def collide(self, other: 'GameObject') -> bool:
@@ -169,8 +176,7 @@ class Ball(GameObject):
             self.angular_velocity += spin_to_add
             
             # Limit maximum spin
-            max_spin = 20.0
-            self.angular_velocity = max(-max_spin, min(max_spin, self.angular_velocity))
+            self.angular_velocity = max(-Config.MAX_BALL_SPIN, min(Config.MAX_BALL_SPIN, self.angular_velocity))
         
         # Move ball away from paddle to prevent sticking
         if direction > 0:  # Hit left paddle, move right

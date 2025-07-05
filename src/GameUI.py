@@ -1,5 +1,6 @@
 import pygame
 from typing import Tuple, List
+from .Config import Config
 
 class GameUI:
     """Utility class for handling all UI rendering and text display"""
@@ -34,9 +35,9 @@ class GameUI:
         screen.blit(difficulty_title, difficulty_rect)
         
         difficulties = [
-            ("1. Easy (25% speed boost)", 0),
-            ("2. Medium (50% speed boost)", 1),
-            ("3. Hard (100% speed boost)", 2)
+            (f"1. {Config.get_difficulty_display_text('Easy')}", 0),
+            (f"2. {Config.get_difficulty_display_text('Medium')}", 1),
+            (f"3. {Config.get_difficulty_display_text('Hard')}", 2)
         ]
         
         y_offset = self.screen_height // 3 
@@ -92,9 +93,9 @@ class GameUI:
         screen.blit(difficulty_title, difficulty_rect)
         
         difficulties = [
-            ("1. Easy (25% speed boost)", 0),
-            ("2. Medium (50% speed boost)", 1),
-            ("3. Hard (100% speed boost)", 2)
+            (f"1. {Config.get_difficulty_display_text('Easy')}", 0),
+            (f"2. {Config.get_difficulty_display_text('Medium')}", 1),
+            (f"3. {Config.get_difficulty_display_text('Hard')}", 2)
         ]
         
         y_offset = self.screen_height // 2 + 50
