@@ -15,6 +15,7 @@ class GameObject(ABC):
         
         Args:
             dt: Delta time in seconds
+            **kwargs: Additional parameters specific to each object type
         """
         pass
 
