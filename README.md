@@ -1,6 +1,9 @@
 # Pong: The Ultimate Paddle Showdown
 
 Welcome to **Pong**, a modern, physics-powered reimagining of the classic arcade game! Whether you want to challenge a friend or test your reflexes against a cunning AI, this game delivers fast-paced, competitive fun with a twist.
+<br>
+![image](https://github.com/user-attachments/assets/5314a3cb-c6be-4617-97e0-c1fc55313898)
+
 
 ## 🚀 Features
 - **Single Player Mode:** Face off against an adaptive AI Bot with three difficulty levels. Each level not only increases the ball's speed but also the bot's prediction accuracy. Can you outsmart the machine?
