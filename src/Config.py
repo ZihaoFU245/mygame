@@ -22,7 +22,7 @@ class Config:
     BALL_MAX_BOUNCE_ANGLE = 75  # Maximum angle in degrees for paddle bounces
     
     # Magnus Effect (spin-induced curve) Configuration
-    MAGNUS_EFFECT_STRENGTH = 0.8  # Reduced from 50.0 - how much spin affects trajectory
+    MAGNUS_EFFECT_STRENGTH = 0.5  # Reduced from 50.0 - how much spin affects trajectory
     MAGNUS_MIN_SPIN_THRESHOLD = 0.1  # Minimum spin to apply Magnus effect
     
     # Air and Angular Friction Configuration
