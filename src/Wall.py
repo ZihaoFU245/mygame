@@ -1,15 +1,15 @@
 import pygame
-from typing import Any
 from .GameObjectBase import GameObject
 
 class Wall(GameObject):
     """The Wall that on top and bottom of the game."""
 
-    def __init__(self, x: float, y: float, width: float, height: float, color: Any = "black"):
-        super().__init__(x, y, width, height)
+    def __init__(self, x: float, y: float, width: float, height: float, color: str = "white"):
+        # Walls are very heavy (effectively immovable)
+        super().__init__(x, y, width, height, mass=1000.0)
         self.color = color
         
-    def update(self, dt: float, direction: pygame.Vector2 = None):
+    def update(self, dt: float, **kwargs):
         """Update of the Wall - walls are static so nothing to update"""
         pass
 

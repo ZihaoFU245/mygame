@@ -35,15 +35,16 @@ class Player(Paddle):
         # Center vertically
         y = (screen_height - paddle_height) // 2
         
-        # Initialize paddle
-        super().__init__(x, y, paddle_width, paddle_height, speed, color)
+        # Initialize paddle with physics properties
+        mass = 5.0  # Heavier paddles for more realistic physics
+        super().__init__(x, y, paddle_width, paddle_height, speed, mass, color)
         self.order = order
         
         # Set screen bounds automatically
         self.set_screen_bounds(screen_width, screen_height, wall_thickness)
 
     def keyListen(self, keys: pygame.key.ScancodeWrapper, dt: float):
-        """Handle keyboard input for paddle movement"""
+        """Handle keyboard input for paddle movement with acceleration"""
         direction = Vector2(0, 0)
         
         if self.order == 0:  # Left player - WASD keys
@@ -57,8 +58,7 @@ class Player(Paddle):
             if keys[pygame.K_DOWN]:
                 direction.y = 1
         
-        # Only update if there's movement
-        if direction.length() > 0:
-            self.update(dt, direction=direction)
+        # Update paddle with direction (handles acceleration automatically)
+        self.update(dt, direction=direction)
 
         
